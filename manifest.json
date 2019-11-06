@@ -1,0 +1,17 @@
+{
+
+  "manifest_version": 2,
+  "name": "Canvas fix",
+  "version": "1.2",
+
+  "description": "Bättre förr",
+
+  "content_scripts": [
+    {
+      "matches": ["*://chalmers.instructure.com/*"],
+      "js": ["injector.js", "fix-link.js"]
+    }
+  ],
+
+  "web_accessible_resources": ["before-style.css"]
+}
