@@ -1,4 +1,3 @@
-// TODO: browser
 var CSS_HREF = chrome.runtime.getURL('before-style.css');
 
 if (/^\/courses\/\d+$/.test(document.location.pathname)) {
@@ -22,8 +21,9 @@ if (/^\/courses\/\d+$/.test(document.location.pathname)) {
         var content = [];
 
         var toAdd = [];
+        // hardcode some useful sub-pages
         toAdd.push(document.location.origin + document.location.pathname + '/pages/kurs-pm');
-        //toAdd.push(document.location.origin + document.location.pathname + '/pages/course%20-pm');
+        toAdd.push(document.location.origin + document.location.pathname + '/pages/course%20pm');
         for (var i = 1; i < sections.length-1; i++) {
             var el = sections[i];
             if (el.href.endsWith('announcements'))
@@ -42,7 +42,8 @@ if (/^\/courses\/\d+$/.test(document.location.pathname)) {
                 return;
 
             for (var i = 0; i < content.length; i++) {
-                wrapper.appendChild(content[i]);
+                if (content[i] != null)
+                    wrapper.appendChild(content[i]);
             }
         }
 
@@ -53,12 +54,13 @@ if (/^\/courses\/\d+$/.test(document.location.pathname)) {
                 iframe.style.display = 'none'
                 iframe.addEventListener('load', () => {
                     var c = iframe.contentWindow.document.getElementById('content');
-                    if (c != null) {
+                    // if valid and not 404
+                    if (c != null && c.querySelector('.ic-Error-page') == null) {
                         console.log('load', j);
                         c.id = c.id + j;
                         content[j] = c;
-                        done();
                     }
+                    done();
                     //iframe.remove();
                 });
                 document.body.appendChild(iframe);
@@ -77,26 +79,3 @@ if (/^\/courses\/\d+$/.test(document.location.pathname)) {
     });
     document.getElementById('section-tabs').appendChild(li);
 }
-
-
-var getHTML = function ( url, callback ) {
-
-	// Feature detection
-	if ( !window.XMLHttpRequest ) return;
-
-	// Create new request
-	var xhr = new XMLHttpRequest();
-
-	// Setup callback
-	xhr.onload = function() {
-		if ( callback && typeof( callback ) === 'function' ) {
-			callback( this.responseXML );
-		}
-	}
-
-	// Get the HTML
-	xhr.open( 'GET', url );
-	xhr.responseType = 'document';
-	xhr.send();
-
-};
